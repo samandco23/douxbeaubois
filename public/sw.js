@@ -1,5 +1,5 @@
-const CACHE_NAME = 'doux-beau-bois-shell-v1';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/favicon.png', '/favicon-32.png', '/apple-touch-icon.png', '/pwa-192.png', '/pwa-512.png', '/logo-doux-beau-bois.png'];
+const CACHE_NAME = 'doux-beau-bois-shell-v2';
+const APP_SHELL = ['/', '/manifest.webmanifest', '/favicon.png', '/favicon-32.png', '/apple-touch-icon.png', '/pwa-192.png', '/pwa-512.png', '/logo-doux-beau-bois.png', '/hero-interior.webp'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));

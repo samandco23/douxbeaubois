@@ -17,3 +17,9 @@ CREATE TABLE IF NOT EXISTS admin_sessions (
 );
 
 CREATE INDEX IF NOT EXISTS admin_sessions_expire_idx ON admin_sessions (expire);
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  rate_key text PRIMARY KEY,
+  attempts integer NOT NULL DEFAULT 0,
+  window_started timestamptz NOT NULL DEFAULT now()
+);

@@ -3,7 +3,7 @@
     "name": "Doux Beau Bois",
     "tagline": "Le bois travaillé, l’élégance révélée",
     "logo": "/logo-doux-beau-bois.png",
-    "heroImage": "/hero-interior.png",
+    "heroImage": "/hero-interior.webp",
     "primary": "#d6ad75",
     "secondary": "#21180f",
     "background": "#17130f",
@@ -48,7 +48,7 @@
       "category": "Salle à manger",
       "description": "Table artisanale aux lignes généreuses, accompagnée de chaises assorties.",
       "price": "À partir de 450 000 FCFA · Démo",
-      "image": "/demo-table.png",
+      "image": "/demo-table.webp",
       "demo": true
     },
     {
@@ -57,7 +57,7 @@
       "category": "Chambre",
       "description": "Tête de lit sculptée et finitions chaleureuses pour une chambre apaisante.",
       "price": "À partir de 680 000 FCFA · Démo",
-      "image": "/demo-bed.png",
+      "image": "/demo-bed.webp",
       "demo": true
     },
     {
@@ -66,7 +66,7 @@
       "category": "Bureau",
       "description": "Bureau de travail avec rangements intégrés et détails en laiton.",
       "price": "À partir de 320 000 FCFA · Démo",
-      "image": "/demo-desk.png",
+      "image": "/demo-desk.webp",
       "demo": true
     }
   ],

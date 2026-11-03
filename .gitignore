@@ -5,5 +5,8 @@ data/site.json
 .env.*
 !.env.example
 .vercel/
+uploads/
+backups/
+*.dump
 __pycache__/
 *.py[cod]

@@ -3,15 +3,32 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import session from 'express-session';
-import { neon } from '@neondatabase/serverless';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.join(root, 'data');
 const storeFile = path.join(dataDir, 'site.json');
 const seedFile = path.join(dataDir, 'demo-seed.json');
 let writeQueue = Promise.resolve();
-const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
+const localRateLimits = new Map();
+let sql = null;
+if (process.env.DATABASE_URL) {
+  const { neon } = await import('@neondatabase/serverless');
+  sql = neon(process.env.DATABASE_URL);
+}
 let schemaReady;
+
+function rewriteLegacyImagePaths(site) {
+  const replacements = new Map([
+    ['/hero-interior.png', '/hero-interior.webp'],
+    ['/demo-table.png', '/demo-table.webp'],
+    ['/demo-bed.png', '/demo-bed.webp'],
+    ['/demo-desk.png', '/demo-desk.webp'],
+  ]);
+  const rewrite = (value) => typeof value === 'string' ? replacements.get(value) || value : value;
+  if (site?.brand) site.brand.heroImage = rewrite(site.brand.heroImage);
+  if (Array.isArray(site?.products)) site.products = site.products.map((product) => ({ ...product, image: rewrite(product.image) }));
+  return site;
+}
 
 async function ensureSchema() {
   if (!sql) return;
@@ -20,6 +37,9 @@ async function ensureSchema() {
     await sql`CREATE TABLE IF NOT EXISTS project_quotes (id text PRIMARY KEY, payload jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now())`;
     await sql`CREATE TABLE IF NOT EXISTS admin_sessions (sid text PRIMARY KEY, sess jsonb NOT NULL, expire timestamptz NOT NULL)`;
     await sql`CREATE INDEX IF NOT EXISTS admin_sessions_expire_idx ON admin_sessions (expire)`;
+    await sql`CREATE TABLE IF NOT EXISTS rate_limits (rate_key text PRIMARY KEY, attempts integer NOT NULL DEFAULT 0, window_started timestamptz NOT NULL DEFAULT now())`;
+    await sql`DELETE FROM admin_sessions WHERE expire < now()`;
+    await sql`DELETE FROM rate_limits WHERE window_started < now() - interval '2 days'`;
     const rows = await sql`SELECT id FROM site_state WHERE id = 1`;
     if (!rows.length) {
       const seed = JSON.parse(await fs.readFile(seedFile, 'utf8'));
@@ -56,14 +76,14 @@ export async function readSite() {
     ]);
     const current = rows[0]?.data || {};
     const seed = JSON.parse(await fs.readFile(seedFile, 'utf8'));
-    return { ...seed, ...current, brand: { ...seed.brand, ...current.brand }, hero: { ...seed.hero, ...current.hero }, contact: { ...seed.contact, ...current.contact }, pages: { ...seed.pages, ...current.pages }, home: { ...seed.home, ...current.home }, socials: Array.isArray(current.socials) ? current.socials : seed.socials || [], products: Array.isArray(current.products) ? current.products : seed.products || [], quotes: quoteRows.map(row => row.payload) };
+    return rewriteLegacyImagePaths({ ...seed, ...current, brand: { ...seed.brand, ...current.brand }, hero: { ...seed.hero, ...current.hero }, contact: { ...seed.contact, ...current.contact }, pages: { ...seed.pages, ...current.pages }, home: { ...seed.home, ...current.home }, socials: Array.isArray(current.socials) ? current.socials : seed.socials || [], products: Array.isArray(current.products) ? current.products : seed.products || [], quotes: quoteRows.map(row => row.payload) });
   }
   let current;
   try { current = JSON.parse(await fs.readFile(storeFile, 'utf8')); }
   catch { try { current = JSON.parse(await fs.readFile(seedFile, 'utf8')); } catch { return null; } }
   let seed = {};
   try { seed = JSON.parse(await fs.readFile(seedFile, 'utf8')); } catch {}
-  return {
+  return rewriteLegacyImagePaths({
     ...seed, ...current,
     brand: { ...seed.brand, ...current.brand },
     hero: { ...seed.hero, ...current.hero },
@@ -73,7 +93,7 @@ export async function readSite() {
     socials: Array.isArray(current.socials) ? current.socials : seed.socials || [],
     products: Array.isArray(current.products) ? current.products : seed.products || [],
     quotes: Array.isArray(current.quotes) ? current.quotes : [],
-  };
+  });
 }
 
 export async function writeSite(data) {
@@ -113,4 +133,36 @@ export async function addQuote(quote) {
 export async function updateQuote(id, status) {
   if (sql) { await ensureSchema(); await sql`UPDATE project_quotes SET payload = jsonb_set(payload, '{status}', to_jsonb(${status}::text)) WHERE id = ${String(id)}`; return; }
   const data = await readSite(); data.quotes = (data.quotes || []).map(item => String(item.id) === String(id) ? { ...item, status } : item); await writeSite(data);
+}
+
+export async function consumeRateLimit(key, maximum, windowMs) {
+  if (sql) {
+    await ensureSchema();
+    const rows = await sql`INSERT INTO rate_limits (rate_key, attempts, window_started)
+      VALUES (${key}, 1, now())
+      ON CONFLICT (rate_key) DO UPDATE SET
+        attempts = CASE WHEN rate_limits.window_started <= now() - (${windowMs} * interval '1 millisecond') THEN 1 ELSE rate_limits.attempts + 1 END,
+        window_started = CASE WHEN rate_limits.window_started <= now() - (${windowMs} * interval '1 millisecond') THEN now() ELSE rate_limits.window_started END
+      RETURNING attempts, window_started`;
+    const row = rows[0];
+    const elapsed = Date.now() - new Date(row.window_started).getTime();
+    return { allowed: row.attempts <= maximum, retryAfterSeconds: Math.max(1, Math.ceil((windowMs - elapsed) / 1000)) };
+  }
+  const now = Date.now();
+  const previous = localRateLimits.get(key);
+  const bucket = !previous || now - previous.startedAt >= windowMs ? { startedAt: now, attempts: 0 } : previous;
+  bucket.attempts += 1;
+  localRateLimits.set(key, bucket);
+  return { allowed: bucket.attempts <= maximum, retryAfterSeconds: Math.max(1, Math.ceil((windowMs - (now - bucket.startedAt)) / 1000)) };
+}
+
+export async function resetRateLimit(key) {
+  if (sql) { await ensureSchema(); await sql`DELETE FROM rate_limits WHERE rate_key = ${key}`; return; }
+  localRateLimits.delete(key);
+}
+
+export async function checkDatabase() {
+  if (sql) { await ensureSchema(); await sql`SELECT 1`; }
+  else { await fs.access(seedFile); }
+  return true;
 }

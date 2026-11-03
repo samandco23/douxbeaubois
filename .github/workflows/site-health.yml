@@ -1,0 +1,18 @@
+name: Site health check
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check API and database
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://douxbeaubois.com' }}
+        run: |
+          response=$(curl --fail --silent --show-error --max-time 20 "$SITE_URL/api/health")
+          echo "$response" | node -e "let text='';process.stdin.on('data',chunk=>text+=chunk).on('end',()=>{const health=JSON.parse(text);if(health.status!=='ok'||health.database!=='connected')process.exit(1);console.log('API and Neon are healthy')})"
