@@ -1,0 +1,107 @@
+{
+  "brand": {
+    "name": "Doux Beau Bois",
+    "tagline": "Le bois travaillé, l’élégance révélée",
+    "logo": "/logo-doux-beau-bois.png",
+    "heroImage": "/hero-interior.png",
+    "primary": "#d6ad75",
+    "secondary": "#21180f",
+    "background": "#17130f",
+    "text": "#ffffff",
+    "accent": "#f2e7d7"
+  },
+  "hero": {
+    "eyebrow": "L’ART DU BOIS, LE GOÛT DU BEAU",
+    "title": "Le bois travaillé.\nL’élégance révélée.",
+    "description": "Des créations en bois pensées pour vos espaces, façonnées avec soin et imaginées pour durer.",
+    "catalogueLabel": "Découvrir le catalogue",
+    "aboutTitle": "Chaque pièce raconte une histoire de caractère.",
+    "aboutText": "Mobilier, aménagement et décoration : explorons ensemble les possibilités du bois pour créer un intérieur qui vous ressemble."
+  },
+  "contact": {
+    "email": "",
+    "phone": "+237 696 52 50 45",
+    "address": "",
+    "whatsapp": "https://wa.me/237696525045"
+  },
+  "socials": [
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com/",
+      "icon": "instagram"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/",
+      "icon": "facebook"
+    },
+    {
+      "name": "TikTok",
+      "url": "https://www.tiktok.com/",
+      "icon": "tiktok"
+    }
+  ],
+  "products": [
+    {
+      "id": "demo-table",
+      "name": "Table de salle à manger en noyer",
+      "category": "Salle à manger",
+      "description": "Table artisanale aux lignes généreuses, accompagnée de chaises assorties.",
+      "price": "À partir de 450 000 FCFA · Démo",
+      "image": "/demo-table.png",
+      "demo": true
+    },
+    {
+      "id": "demo-bed",
+      "name": "Lit signature en teck",
+      "category": "Chambre",
+      "description": "Tête de lit sculptée et finitions chaleureuses pour une chambre apaisante.",
+      "price": "À partir de 680 000 FCFA · Démo",
+      "image": "/demo-bed.png",
+      "demo": true
+    },
+    {
+      "id": "demo-desk",
+      "name": "Bureau artisanal en noyer",
+      "category": "Bureau",
+      "description": "Bureau de travail avec rangements intégrés et détails en laiton.",
+      "price": "À partir de 320 000 FCFA · Démo",
+      "image": "/demo-desk.png",
+      "demo": true
+    }
+  ],
+  "quotes": [],
+  "pages": {
+    "catalogueTitle": "Nos créations",
+    "catalogueIntro": "Parcourez ces exemples de mobilier et d’aménagement. Les prix et visuels sont fictifs et servent à illustrer le catalogue.",
+    "aboutTitle": "Le bois, notre matière de prédilection",
+    "aboutText": "Nous imaginons et réalisons des pièces qui allient savoir-faire, matières nobles et élégance intemporelle. Cette présentation est une maquette de démonstration à personnaliser avec l’histoire et les réalisations réelles de Doux Beau Bois."
+  },
+  "home": {
+    "introEyebrow": "L’ART DU BOIS, AU QUOTIDIEN",
+    "introTitle": "Des matières nobles.\\nDes espaces qui vous ressemblent.",
+    "introText": "Du premier croquis à la dernière finition, nous imaginons avec vous des créations en bois qui trouvent naturellement leur place chez vous.",
+    "servicesEyebrow": "NOTRE SAVOIR-FAIRE",
+    "servicesTitle": "Le bois, façonné pour vous.",
+    "services": [
+      {
+        "title": "Mobilier sur mesure",
+        "text": "Des pièces pensées pour vos espaces, vos usages et vos envies."
+      },
+      {
+        "title": "Aménagement intérieur",
+        "text": "Le bois donne du relief et une identité singulière à votre intérieur."
+      },
+      {
+        "title": "Finitions & détails",
+        "text": "Des matières choisies et des finitions soignées jusque dans les détails."
+      }
+    ],
+    "featuredEyebrow": "UN SAVOIR-FAIRE, MILLE POSSIBILITÉS",
+    "featuredTitle": "Imaginé avec vous.\\nRéalisé avec soin.",
+    "featuredText": "Chaque projet commence par une conversation. Parlez-nous de votre espace, de vos idées et de la façon dont vous souhaitez vivre le bois.",
+    "catalogueEyebrow": "INSPIRATION",
+    "contactEyebrow": "VOTRE IDÉE PREND FORME ICI",
+    "contactTitle": "Créons quelque chose\\nde beau, ensemble."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "Doux Beau Bois — Le bois travaillé, l’élégance révélée",
+  "short_name": "Doux Beau Bois",
+  "description": "Mobilier, menuiserie et aménagements en bois façonnés avec soin.",
+  "lang": "fr-CM",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#17130f",
+  "theme_color": "#17130f",
+  "icons": [
+    { "src": "/pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/[...path].js": { "includeFiles": "data/demo-seed.json" }
+  },
+  "rewrites": [{ "source": "^/(?!api/).*$", "destination": "/index.html" }]
+}

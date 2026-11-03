@@ -1,0 +1,6 @@
+{
+  "name":"doux-beau-bois","version":"1.0.0","private":true,"type":"module",
+  "scripts":{"dev":"concurrently \"vite --host 0.0.0.0\" \"node --env-file-if-exists=.env server.js\"","build":"vite build","start":"node --env-file-if-exists=.env server.js","preview":"vite preview --host 0.0.0.0","db:setup":"node --env-file-if-exists=.env scripts/setup-db.js"},
+  "engines":{"node":"22.x"},
+  "dependencies":{"@neondatabase/serverless":"^1.2.0","@vitejs/plugin-react":"latest","vite":"latest","typescript":"latest","react":"latest","react-dom":"latest","lucide-react":"^0.468.0","express":"^4.21.2","express-session":"^1.18.1","bcryptjs":"^2.4.3","concurrently":"^9.1.2"},"devDependencies":{}
+}
